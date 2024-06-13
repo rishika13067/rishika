@@ -1,0 +1,33 @@
+import numpy as np
+
+pt = input("Enter plaintext: ")
+key = input("Enter key: ")
+
+# Padding plaintext if necessary
+if len(pt) % 3 != 0:
+    pt += 'X' * (3 - (len(pt) % 3))
+
+# Initialize matrix_key
+matrix_key = [[0 for _ in range(3)] for _ in range(3)]
+
+# Populate matrix_key
+k = 0
+for i in range(3):
+    for j in range(3):
+        matrix_key[i][j] = ord(key[k]) - 65
+        k += 1
+
+ct = ""
+
+# Encrypt plaintext
+for k in range(0, len(pt), 3):
+    plaintext_matrix = [[ord(pt[k]) - 65], [ord(pt[k + 1]) - 65], [ord(pt[k + 2]) - 65]]
+    
+    m1 = np.array(matrix_key)
+    m2 = np.array(plaintext_matrix)
+    encrypted_matrix = np.dot(m1, m2) % 26  # Calculate encrypted matrix using matrix multiplication and modulo 26
+
+    for i in range(3):
+        ct += chr(encrypted_matrix[i][0] + 65)  # Convert back to ASCII and add to ciphertext
+
+print("Ciphertext:", ct)
